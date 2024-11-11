@@ -1,0 +1,35 @@
+name: Build PHP Static Binary
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up static-php-cli
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+          extensions: mbstring,curl,zlib,openssl # 您的扩展配置
+
+      - name: Build PHP CLI with Debug Symbols
+        uses: staticphp/static-php-cli@main
+        with:
+          php-version: '7.4'                       # PHP 版本
+          build-cli: true                          # 构建 CLI 二进制
+          build-phpmicro: false                    # 不构建 phpmicro 二进制
+          build-fpm: false                         # 不构建 FPM 二进制
+          extensions: mbstring,curl,zlib,openssl   # 编译的扩展
+          prefer-pre-built: false                  # 不使用预构建的二进制，确保自定义编译
+          enable-debug: true                       # 启用调试
+          enable-debug-logs: true                  # 启用详细调试日志
